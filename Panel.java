@@ -22,6 +22,7 @@ public class Panel extends JPanel {
 
     JTextArea textArea = new JTextArea(10,40);
     JTextField textField = new JTextField(12);
+    JTextField userSpeed = new JTextField(12);
     
     JButton instructionButton = new JButton("Instructions");
     JButton startButton = new JButton("Start");
@@ -31,6 +32,7 @@ public class Panel extends JPanel {
     JButton wpm250 = new JButton("250 WPM");
     JButton wpm350 = new JButton("350 WPM");
     JButton wpm450 = new JButton("450 WPM");
+    
     JScrollPane scrollPane = new JScrollPane(textArea);
     
 
@@ -49,21 +51,24 @@ public class Panel extends JPanel {
     
     String input;
     String userText;
-		String printed = "";
+	String printed = "";
     
     int speed = 1;
 	int currentSpot = 0;
 	int j = 0;
 	int tick = 1;
+	boolean bryan = true;
 
     public Panel() {
         add(instructionButton);
         add(startButton);
+
         startButton.setFocusable(false);
         instructionButton.setFocusable(false);
         addActionListener();
     	setBackground(Color.LIGHT_GRAY);
     	printTimer();
+    	
     }
 
     public void paintComponent(Graphics g) {
@@ -118,26 +123,41 @@ public class Panel extends JPanel {
         	wpm250.setFocusable(false);
         	wpm350.setFocusable(false);
         	wpm450.setFocusable(false);
+        	userSpeed.setLocation(500,250);
         	
         }
-        else if (wpm1) {
-        	double one = printed.length() / 2;
-        	int wow = (int)one;
-        	
-        	int space = printed.length() * 28;
-        	String temp = printed.substring(0,wow);
+        else if (wpm1 || wpm2 || wpm3) {
+        	String letter;
+        	int offset = 0;
+        	if (printed.length() == 2) {
+        		letter = printed.charAt(0)+"";
+        	}
+        		
+        	else if (printed.length() == 3 || printed.length() == 4 ) {
+        		letter = printed.charAt(1)+"";
+        		offset = 38;
+        	}
+        	else if (printed.length() == 5 || printed.length() == 6 ) {
+        		letter = printed.charAt(2)+"";
+        		offset = 76;
+        	}
+        	else if (printed.length() == 7 || printed.length() == 8 ) {
+        		letter = printed.charAt(3)+"";
+        		offset = 114;
+        	}
+        	else {
+        		letter = printed.charAt(4)+"";
+        		offset = 152;
+        	}
+        	graphics.drawString(printed, 385 - offset, 300);        	
         	graphics.setColor(Color.RED);
-        	temp += printed.substring(wow, wow);
+        	graphics.drawString(letter, 385, 300);
         	graphics.setColor(Color.BLACK);
-        	temp += printed.substring(wow, printed.length());
-        	graphics.drawString(printed, 100, 100);
+        	graphics.setFont(titleFont);
+        	graphics.fillRect(400, 0, 5, 250);
+        	graphics.fillRect(400, 325, 5, 300);
         }
-        else if (wpm2) {
-        	graphics.drawString(printed, 100, 100);      	
-        }
-        else if (wpm3) {
-        	graphics.drawString(printed, 100, 100);      	
-        }
+
         else { //default page
         	graphics.drawString("Fast Text", 225, 125);
         	graphics.drawString("Reader", 275, 175);
@@ -145,6 +165,7 @@ public class Panel extends JPanel {
         	instructionButton.setLocation(325,450);
         	startButton.setSize(300,150);
         	startButton.setLocation(250,250);
+
         }
         
 
@@ -217,6 +238,7 @@ public class Panel extends JPanel {
             	wpm250.setVisible(true);
             	wpm350.setVisible(true);
             	wpm450.setVisible(true);
+           
             	
             	remove(scrollPane);
                 remove(textField);
@@ -229,6 +251,8 @@ public class Panel extends JPanel {
         wpm250.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
             	wpm1 = true;
+            	wpm2 = false;
+            	wpm3 = false;
             	submit = false;
             	speed = 180;
             	remove(wpm250);
@@ -241,7 +265,9 @@ public class Panel extends JPanel {
         
         wpm350.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
+            	wpm1 = false;
             	wpm2 = true;
+            	wpm3 = false;
             	submit = false;
             	speed = 120;
             	remove(wpm250);
@@ -254,6 +280,8 @@ public class Panel extends JPanel {
         
         wpm450.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
+            	wpm1 = false;
+            	wpm2 = false;
             	wpm3 = true;
             	submit = false;
             	speed = 90;
@@ -278,7 +306,6 @@ public class Panel extends JPanel {
     						printed = userText.substring(currentSpot, i + 1);
     						currentSpot = i;
     						go = false;
-    						
     					}
     				}
     			repaint();
@@ -289,3 +316,7 @@ public class Panel extends JPanel {
     	time.start();
     }
 }
+
+/*
+On a cold day in April of 1984, a man named Winston Smith returns to his home, a dilapidated apartment building called Victory Mansions. Thin, frail, and thirty-nine years old, it is painful for him to trudge up the stairs because he has a varicose ulcer above his right ankle. The elevator is always out of service so he does not try to use it. As he climbs the staircase, he is greeted on each landing by a poster depicting an enormous face, underscored by the words “BIG BROTHER IS WATCHING YOU.”
+*/
