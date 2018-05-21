@@ -77,6 +77,7 @@ public class Panel extends JPanel {
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics.setColor(Color.BLACK);
         
+        
         Font titleFont = new Font("Courier", Font.BOLD, 64);
         Font instructions = new Font("", Font.BOLD, 24);
         
@@ -129,7 +130,12 @@ public class Panel extends JPanel {
         else if (wpm1 || wpm2 || wpm3) {
         	String letter;
         	int offset = 0;
-        	if (printed.length() == 2) {
+        	//if (printed.length() < 2)
+        		//letter = printed.charAt(0)+"";
+        	if (printed.length() < 2) {
+        		letter = "";
+        	}
+        	else if (printed.length() == 2) {
         		letter = printed.charAt(0)+"";
         	}
         		
@@ -145,10 +151,11 @@ public class Panel extends JPanel {
         		letter = printed.charAt(3)+"";
         		offset = 114;
         	}
-        	else {
+        	else if (printed.length() > 8){
         		letter = printed.charAt(4)+"";
         		offset = 152;
         	}
+        	else letter = "";
         	graphics.drawString(printed, 385 - offset, 300);        	
         	graphics.setColor(Color.RED);
         	graphics.drawString(letter, 385, 300);
@@ -217,6 +224,9 @@ public class Panel extends JPanel {
                 remove(wpm250);
                 remove(wpm350);
                 remove(wpm450);
+                wpm1 = false;
+                wpm2 = false; 
+                wpm3 = false;
                 repaint();
             }
         });
@@ -258,7 +268,7 @@ public class Panel extends JPanel {
             	remove(wpm250);
             	remove(wpm350);
             	remove(wpm450);
-            	remove(homeScreen);
+            	
             	repaint();
             }
         });
@@ -273,7 +283,7 @@ public class Panel extends JPanel {
             	remove(wpm250);
             	remove(wpm350);
             	remove(wpm450);
-            	remove(homeScreen);
+            	
             	repaint();
             }
         });
@@ -288,7 +298,7 @@ public class Panel extends JPanel {
             	remove(wpm250);
             	remove(wpm350);
             	remove(wpm450);
-            	remove(homeScreen);
+            	
             	repaint();
             }
         });
@@ -307,6 +317,11 @@ public class Panel extends JPanel {
     						currentSpot = i;
     						go = false;
     					}
+    					else if (i == userText.length() - 1) {
+    						printed = userText.substring(currentSpot, i + 1);
+    						currentSpot = i;
+    						go = false;
+    					}
     				}
     			repaint();
     			}
@@ -318,5 +333,5 @@ public class Panel extends JPanel {
 }
 
 /*
-On a cold day in April of 1984, a man named Winston Smith returns to his home, a dilapidated apartment building called Victory Mansions. Thin, frail, and thirty-nine years old, it is painful for him to trudge up the stairs because he has a varicose ulcer above his right ankle. The elevator is always out of service so he does not try to use it. As he climbs the staircase, he is greeted on each landing by a poster depicting an enormous face, underscored by the words ‚ÄúBIG BROTHER IS WATCHING YOU.‚Äù
+On a cold day in April of 1984, a man named Winston Smith returns to his home, a dilapidated apartment building called Victory Mansions. Thin, frail, and thirty-nine years old, it is painful for him to trudge up the stairs because he has a varicose ulcer above his right ankle. The elevator is always out of service so he does not try to use it. As he climbs the staircase, he is greeted on each landing by a poster depicting an enormous face, underscored by the words ìBIG BROTHER IS WATCHING YOU.î
 */
