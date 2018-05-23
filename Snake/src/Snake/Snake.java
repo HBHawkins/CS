@@ -19,7 +19,10 @@ public class Snake {
 	
 	int currentVelocity = 0;
 
-
+	public void resetSnake() {
+		body.clear();
+		body.add(new Body("first"));
+	}
 	
 	public Snake() {
 		body.add(new Body("first"));
@@ -53,9 +56,9 @@ public class Snake {
 	}
 	
 	public void moveSnake(Graphics2D graphics) {
-		if (gameOver)
-			graphics.drawString("GAME OVER", 400, 400);
-		else {
+		if (!gameOver)
+			
+		 {
 			if (currentVelocity > 0) {
 				if (currentVelocity == 1) {
 					for (int i = body.size() - 1; i > 0; i--) {
