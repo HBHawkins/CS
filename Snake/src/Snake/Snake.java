@@ -35,7 +35,21 @@ public class Snake {
 	
 	
 	public void drawSnake(Graphics2D graphics) {
-		graphics.setColor(Color.GREEN);
+		Color snakeC = Color.BLACK;
+		Color foodC = Color.BLACK;
+		if (Panel.cSnake == 1) 
+        	snakeC = Color.GREEN;
+        else if (Panel.cSnake == 2)
+        	snakeC = Color.RED;
+        else if (Panel.cSnake == 3)
+        	snakeC = Color.BLUE;
+        else if (Panel.cSnake == 4)
+        	snakeC = Color.ORANGE;
+        else if (Panel.cSnake == 5)
+        	snakeC = Color.YELLOW;
+         
+
+		graphics.setColor(snakeC);
 		for (int i = 0; i < body.size(); i++) {
 			graphics.fillRect(body.get(i).xPos, body.get(i).yPos, 25, 25);			
 		}
