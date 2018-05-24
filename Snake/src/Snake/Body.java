@@ -21,8 +21,8 @@ public class Body {
     }
     
 	public Body() {
-		xPos = Snake.body.get(Snake.body.size()-1).xPos;
-		yPos = Snake.body.get(Snake.body.size()-1).yPos;
+		xPos = Snake.body.get(Snake.body.size()-1).xPos - 20;
+		yPos = Snake.body.get(Snake.body.size()-1).yPos - 20;
 	}
 
 }
