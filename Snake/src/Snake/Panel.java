@@ -24,12 +24,23 @@ public class Panel extends JPanel implements KeyListener{
     JTextField userSpeed = new JTextField(12);
     JButton startButton = new JButton("Start Game");
     JButton settingsButton = new JButton("Settings");
+    JButton backButton = new JButton("Back");
+    JButton snakeOrange = new JButton("");
+    JButton snakeGreen = new JButton("");
+    JButton snakeRed = new JButton("");
+    JButton snakeYellow = new JButton("");
+    JButton snakeBlue = new JButton("");
+    JButton foodOrange = new JButton("");
+    JButton foodGreen = new JButton("");
+    JButton foodRed = new JButton("");
+    JButton foodYellow = new JButton("");
+    JButton foodBlue = new JButton("");
 
     JButton titleButton = new JButton("Title Screen");
     
     JScrollPane scrollPane = new JScrollPane(textArea);
     
-    
+    int score = 1;
     
     boolean up = false;
     boolean down = false;
@@ -43,7 +54,9 @@ public class Panel extends JPanel implements KeyListener{
     
     
     int previousVelocity = 0;
-    int tick = 1;
+    static int cSnake = 1;
+    static int cFood = 1;
+    static int tick = 1;
 
     public Panel() {
         startButton.setFocusable(false);
@@ -65,12 +78,39 @@ public class Panel extends JPanel implements KeyListener{
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics.setColor(Color.BLACK);
         Font titleFont = new Font("Courier", Font.BOLD, 64);
+        Font settingsFont = new Font("", Font.BOLD, 32);
+        Font scoreFont = new Font("", Font.BOLD, 24);
         graphics.setFont(titleFont);
+        Color snakeC = Color.BLACK;
+        Color foodC = Color.BLACK;
         
+        if (cSnake == 1) 
+        	snakeC = Color.GREEN;
+        else if (cSnake == 2)
+        	snakeC = Color.RED;
+        else if (cSnake == 3)
+        	snakeC = Color.BLUE;
+        else if (cSnake == 4)
+        	snakeC = Color.ORANGE;
+        else if (cSnake == 5)
+        	snakeC = Color.YELLOW;
+         
+        if (cFood == 1) 
+        	foodC = Color.RED;
+        else if (cFood == 2)
+        	foodC = Color.ORANGE;
+        else if (cFood == 3)
+        	foodC = Color.BLUE;
+        else if (cFood == 4)
+        	foodC = Color.GREEN;
+        else if (cFood == 5)
+        	foodC = Color.YELLOW;
 
         
         if (startClicked) {
-        	graphics.setColor(Color.RED);
+        	graphics.setColor(foodC);
+        	
+        	
         	snake.moveSnake(graphics);
         	snake.drawSnake(graphics);
         	for(int i = 1; i < snake.body.size(); i++) {
@@ -91,24 +131,59 @@ public class Panel extends JPanel implements KeyListener{
         		titleButton.setLocation(500,500);
         	}
         
-        	if (snake.foodX == snake.body.get(0).xPos && snake.foodY == snake.body.get(0).yPos) {
+        	if ((snake.foodX - snake.body.get(0).xPos > -25 && snake.foodX - snake.body.get(0).xPos < 25) && (snake.foodY - snake.body.get(0).yPos > -25 && snake.foodY - snake.body.get(0).yPos < 25)) {
         		snake.addTail();
         		snake.addFood();
+        		score++;
         	}
         	snake.startFood();
-        	graphics.setColor(Color.RED);
+        	graphics.setColor(foodC);
         	if (gameOver == false)
         		graphics.fillRect(snake.foodX, snake.foodY, 25, 25);
+        	graphics.setFont(scoreFont);
+        	graphics.drawString("Score: " + score, 1075, 25);
         }
         
         else if (settingsClicked) {
         	startClicked = false;
         	graphics.setColor(Color.WHITE);
         	graphics.drawString("Settings", 450, 100);
+        	backButton.setSize(100, 100);
+        	backButton.setLocation(1088, 563);
+        	graphics.setFont(settingsFont);
+        	graphics.drawString("Snake Color", 500, 200);
+        	graphics.drawString("Food Color", 500, 440);
+        	
+        	snakeOrange.setBounds(350, 250, 100, 100);
+        	snakeOrange.setBackground(Color.ORANGE);
+        	snakeRed.setBounds(450, 250, 100, 100);
+        	snakeRed.setBackground(Color.RED);
+        	snakeGreen.setBounds(550, 250, 100, 100);
+        	snakeGreen.setBackground(Color.GREEN);
+        	snakeYellow.setBounds(650, 250, 100, 100);
+        	snakeYellow.setBackground(Color.YELLOW);
+        	snakeBlue.setBounds(750, 250, 100, 100);
+        	snakeBlue.setBackground(Color.BLUE);
+        	foodOrange.setBounds(350, 500, 100, 100);
+        	foodOrange.setBackground(Color.ORANGE);
+        	foodRed.setBounds(450, 500, 100, 100);
+        	foodRed.setBackground(Color.RED);
+        	foodGreen.setBounds(550, 500, 100, 100);
+        	foodGreen.setBackground(Color.GREEN);
+        	foodYellow.setBounds(650, 500, 100, 100);
+        	foodYellow.setBackground(Color.YELLOW);
+        	foodBlue.setBounds(750, 500, 100, 100);
+        	foodBlue.setBackground(Color.BLUE);
+        	
+        	
         }
         else {
         	graphics.setColor(Color.WHITE);
         	graphics.drawString("Snake", 500, 100);
+        	graphics.setColor(snakeC);
+        	graphics.fillRect(450, 225, 200, 25);
+        	graphics.setColor(foodC);
+        	graphics.fillRect(700, 225, 25, 25);
         	startButton.setSize(200, 100);
         	startButton.setLocation(500,400);
         	settingsButton.setSize(100,50);
@@ -118,27 +193,36 @@ public class Panel extends JPanel implements KeyListener{
     
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == 37) {
-			snake.currentVelocity = 1;
-			System.out.println("left");
-			repaint();
+		if (gameOver == false) {
+			if (snake.currentVelocity != 3) {
+				if (e.getKeyCode() == 37) {
+					snake.currentVelocity = 1;
+					System.out.println("left");
+					repaint();
+				}
+			}
+			if (snake.currentVelocity != 4) {
+				if (e.getKeyCode() == 38) {
+					snake.currentVelocity = 2;
+					System.out.println("up");
+					repaint();
+				}
+			}
+			if (snake.currentVelocity != 1) {
+				if (e.getKeyCode() == 39) {
+					snake.currentVelocity = 3;
+					System.out.println("right");
+					repaint();
+				}
+			}
+			if (snake.currentVelocity != 2) {
+				if (e.getKeyCode() == 40) {
+					snake.currentVelocity = 4;
+					System.out.println("down");
+					repaint();
+				}
+			}
 		}
-		if (e.getKeyCode() == 38) {
-			snake.currentVelocity = 2;
-			System.out.println("up");
-			repaint();
-		}
-		if (e.getKeyCode() == 39) {
-			snake.currentVelocity = 3;
-			System.out.println("right");
-			repaint();
-		}
-		if (e.getKeyCode() == 40) {
-			snake.currentVelocity = 4;
-			System.out.println("down");
-			repaint();
-		}
-		
 	}
 
 	@Override
@@ -159,7 +243,27 @@ public class Panel extends JPanel implements KeyListener{
                 startClicked = true;
                 remove(startButton);
                 gameOver = false;
+                remove(settingsButton);
                 System.out.println("start");
+                repaint();
+            }
+        });
+        backButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                add(startButton);
+                add(settingsButton);
+                settingsClicked = false;
+                remove(backButton);
+                remove(snakeOrange);
+                remove(snakeRed);
+                remove(snakeBlue);
+                remove(snakeGreen);
+                remove(snakeYellow);
+                remove(foodOrange);
+                remove(foodRed);
+                remove(foodBlue);
+                remove(foodGreen);
+                remove(foodYellow);
                 repaint();
             }
         });
@@ -170,9 +274,19 @@ public class Panel extends JPanel implements KeyListener{
                 remove(settingsButton);
                 gameOver = false;
                 settingsClicked = true;
-                add(titleButton);
                 
+                add(backButton);
                 
+                add(snakeOrange);
+                add(snakeRed);
+                add(snakeBlue);
+                add(snakeGreen);
+                add(snakeYellow);
+                add(foodOrange);
+                add(foodRed);
+                add(foodBlue);
+                add(foodGreen);
+                add(foodYellow);
                 repaint();
             }
         });
@@ -182,8 +296,69 @@ public class Panel extends JPanel implements KeyListener{
                 remove(titleButton);
                 gameOver = false;
                 add(startButton);
+                add(settingsButton);
                 snake.resetSnake();
                 snake.currentVelocity = 0;
+                repaint();
+            }
+        });
+        snakeOrange.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	cSnake = 4;
+                repaint();
+            }
+        });
+        snakeRed.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	cSnake = 2;
+                repaint();
+            }
+        });
+        snakeBlue.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	cSnake = 3;
+                repaint();
+            }
+        });
+        snakeGreen.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	cSnake = 1;
+                repaint();
+            }
+        });
+        snakeYellow.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	cSnake = 5;
+                repaint();
+            }
+        });
+        foodOrange.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	cFood = 2;
+                repaint();
+            }
+        });
+        foodRed.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	cFood = 1;
+                repaint();
+            }
+        });
+        foodBlue.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	cFood = 3;
+                repaint();
+            }
+        });
+        foodGreen.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	cFood = 4;
+                repaint();
+            }
+        });
+        foodYellow.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	cFood = 5;
                 repaint();
             }
         });
@@ -192,7 +367,7 @@ public class Panel extends JPanel implements KeyListener{
 	public void printTimer() {
     	Timer time = new Timer(1, new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			if (tick % 10 == 0 && gameOver == false) {	
+    			if (tick % 50 == 0 && gameOver == false) {	
     				repaint();
     			}
     			tick++;
