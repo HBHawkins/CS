@@ -9,7 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
+import javax.imageio.IIOException;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -35,6 +39,7 @@ public class Panel extends JPanel implements KeyListener{
     JButton foodRed = new JButton("");
     JButton foodYellow = new JButton("");
     JButton foodBlue = new JButton("");
+    JButton bounds = new JButton("Easy Mode");
 
     JButton titleButton = new JButton("Title Screen");
     
@@ -51,7 +56,7 @@ public class Panel extends JPanel implements KeyListener{
     boolean gameOver = false;
     boolean started = false;
     boolean settingsClicked = false;
-    
+    boolean easyMode = false;
     
     int previousVelocity = 0;
     static int cSnake = 1;
@@ -68,6 +73,7 @@ public class Panel extends JPanel implements KeyListener{
     	add(startButton);
     	addActionListener();
     	add(settingsButton);
+    	readFile();
     }
     
 
@@ -116,14 +122,28 @@ public class Panel extends JPanel implements KeyListener{
         	for(int i = 1; i < snake.body.size(); i++) {
         		if (snake.body.get(0).xPos == snake.body.get(i).xPos && snake.body.get(0).yPos == snake.body.get(i).yPos) {
         			gameOver = true;
+        			
         		}
         	}
-        	if (snake.body.get(0).xPos < 0 || snake.body.get(0).xPos > 1175 || snake.body.get(0).yPos < 0 || snake.body.get(0).yPos > 650) {
-        		gameOver = true;
+        	if (easyMode == false) {
+        		if (snake.body.get(0).xPos < 0 || snake.body.get(0).xPos > 1175 || snake.body.get(0).yPos < 0 || snake.body.get(0).yPos > 650) {
+        			gameOver = true;
+        			
+        		}
+        	}
+        	else {
+        		if (snake.body.get(0).xPos < 0)
+        			snake.body.get(0).xPos = 1175;
+        		else if (snake.body.get(0).xPos > 1175)
+        			snake.body.get(0).xPos = 0;
+        		else if (snake.body.get(0).yPos < 0)
+        			snake.body.get(0).yPos = 650;
+        		else if (snake.body.get(0).yPos > 650)
+        			snake.body.get(0).yPos = 0;
         	}
         	
         	if (gameOver) {
-        		graphics.setColor(Color.RED);
+        		graphics.setColor(Color.WHITE);
         		graphics.drawString("GAME OVER", 400, 300);
         	
         		add(titleButton);
@@ -131,20 +151,25 @@ public class Panel extends JPanel implements KeyListener{
         		titleButton.setLocation(500,500);
         	}
         
-        	if ((snake.foodX - snake.body.get(0).xPos > -25 && snake.foodX - snake.body.get(0).xPos < 25) && (snake.foodY - snake.body.get(0).yPos > -25 && snake.foodY - snake.body.get(0).yPos < 25)) {
+        	
+        		if (snake.foodX == snake.body.get(0).xPos && snake.foodY == snake.body.get(0).yPos) {
         		snake.addTail();
         		snake.addFood();
         		score++;
-        	}
+        		}
+        	
         	snake.startFood();
         	graphics.setColor(foodC);
         	if (gameOver == false)
         		graphics.fillRect(snake.foodX, snake.foodY, 25, 25);
         	graphics.setFont(scoreFont);
+        	graphics.setColor(Color.WHITE);
         	graphics.drawString("Score: " + score, 1075, 25);
+        	graphics.setColor(foodC);
         }
         
         else if (settingsClicked) {
+        	
         	startClicked = false;
         	graphics.setColor(Color.WHITE);
         	graphics.drawString("Settings", 450, 100);
@@ -153,7 +178,7 @@ public class Panel extends JPanel implements KeyListener{
         	graphics.setFont(settingsFont);
         	graphics.drawString("Snake Color", 500, 200);
         	graphics.drawString("Food Color", 500, 440);
-        	
+        	bounds.setBounds(990, 10, 200, 100);
         	snakeOrange.setBounds(350, 250, 100, 100);
         	snakeOrange.setBackground(Color.ORANGE);
         	snakeRed.setBounds(450, 250, 100, 100);
@@ -180,6 +205,12 @@ public class Panel extends JPanel implements KeyListener{
         else {
         	graphics.setColor(Color.WHITE);
         	graphics.drawString("Snake", 500, 100);
+        	graphics.setFont(settingsFont);
+        	if (easyMode) {
+        		graphics.drawString("Easy", 1075, 30);
+        	}
+        	else graphics.drawString("Normal", 1075, 30);
+        	graphics.setFont(titleFont);
         	graphics.setColor(snakeC);
         	graphics.fillRect(450, 225, 200, 25);
         	graphics.setColor(foodC);
@@ -224,7 +255,24 @@ public class Panel extends JPanel implements KeyListener{
 			}
 		}
 	}
-
+	public void readFile() {
+	try{
+		FileReader fr = new FileReader("\\\\ITSERVER\\usersub\\hhawkins\\My Documents\\New folder\\Snake\\src\\resources\\highscores.txt");
+		BufferedReader br = new BufferedReader(fr);
+		int highscore = 0;
+		String eachLine;
+		while((eachLine = br.readLine()) != null){
+	     	highscore = Integer.valueOf(eachLine);
+	     	System.out.print(highscore);
+		}
+	}
+	catch(IOException e) {
+		System.out.println("Error");
+	}
+	}
+	
+	
+	
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
@@ -248,6 +296,28 @@ public class Panel extends JPanel implements KeyListener{
                 repaint();
             }
         });
+        bounds.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                easyMode = true;
+                add(startButton);
+                add(settingsButton);
+                settingsClicked = false;
+                remove(backButton);
+                remove(snakeOrange);
+                remove(snakeRed);
+                remove(snakeBlue);
+                remove(snakeGreen);
+                remove(snakeYellow);
+                remove(foodOrange);
+                remove(foodRed);
+                remove(foodBlue);
+                remove(foodGreen);
+                remove(foodYellow);
+                remove(bounds);
+                System.out.println("easy");
+                repaint();
+            }
+        });
         backButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 add(startButton);
@@ -264,6 +334,7 @@ public class Panel extends JPanel implements KeyListener{
                 remove(foodBlue);
                 remove(foodGreen);
                 remove(foodYellow);
+                remove(bounds);
                 repaint();
             }
         });
@@ -276,7 +347,7 @@ public class Panel extends JPanel implements KeyListener{
                 settingsClicked = true;
                 
                 add(backButton);
-                
+                add(bounds);
                 add(snakeOrange);
                 add(snakeRed);
                 add(snakeBlue);
@@ -299,6 +370,7 @@ public class Panel extends JPanel implements KeyListener{
                 add(settingsButton);
                 snake.resetSnake();
                 snake.currentVelocity = 0;
+                score = 1;
                 repaint();
             }
         });
@@ -367,7 +439,7 @@ public class Panel extends JPanel implements KeyListener{
 	public void printTimer() {
     	Timer time = new Timer(1, new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			if (tick % 50 == 0 && gameOver == false) {	
+    			if (tick % 10 == 0 && gameOver == false) {	
     				repaint();
     			}
     			tick++;
